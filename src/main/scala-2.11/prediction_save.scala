@@ -24,13 +24,17 @@ object prediction_save {
     val model = ALS.train(ratings, rank, numIterations, 0.01)
 
     // Evaluate the model on rating data
-    val usersProducts = ratings.map { case Rating(user, product, rate) =>
-      (user, product)
+    val usersProducts =  (796000 to 798000).flatMap{ user =>
+       (238 to 280).map { product =>
+         (user, product)
+       }
     }
 
-    model.predict(usersProducts).foreach{ case Rating(user, product, rate) =>
-      println(user.toString + ","  + product.toString + "," + rate.toString)
+    val predictionAllData = model.predict(sc.parallelize(usersProducts)).map{ case Rating(user, product, rate) =>
+      // println(user.toString + ","  + product.toString + "," + rate.toString)
+      (user, product, rate)
     }
+    predictionAllData.saveAsTextFile("./prediction_rdd")
 
     sc.stop()
 
