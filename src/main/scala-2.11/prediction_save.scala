@@ -15,7 +15,7 @@ object prediction_save {
   def main(args: Array[String]): Unit = {
 
     val conf = new SparkConf().setAppName("Ar Application")
-    conf.setMaster("local[*]")
+    //conf.setMaster("local[*]")
     val sc = new SparkContext(conf)
 
     // Load and parse the data
