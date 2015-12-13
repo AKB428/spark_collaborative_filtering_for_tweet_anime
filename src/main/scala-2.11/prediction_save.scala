@@ -3,6 +3,12 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 /**
   * Created by Siori on 2015/12/13.
+  *
+  * run cf_data_file.csv start_user_id end_user_id
+  *
+  * [cf_data_file.csv]
+  * user_id,product_id,rank
+  * int,int,double[or int]
   */
 // http://spark.apache.org/docs/latest/mllib-collaborative-filtering.html
 object prediction_save {
@@ -24,7 +30,11 @@ object prediction_save {
     val model = ALS.train(ratings, rank, numIterations, 0.01)
 
     // Evaluate the model on rating data
-    val usersProducts =  (796000 to 798000).flatMap{ user =>
+    val start_user_id = args(1).toInt // 796000
+    val end_user_id = args(2).toInt // 876226
+    val usersProducts =  (start_user_id to end_user_id).flatMap{ user =>
+      // 238->280 2015年 4期のアニメ作品のID
+      // http://api.moemoe.tokyo/anime/v1/master/2015
        (238 to 280).map { product =>
          (user, product)
        }
